@@ -28,21 +28,21 @@ async function run() {
         app.get('/services', async (req, res) => {
             const cursor = servicesCollection.find({});
             const products = await cursor.toArray();
-            res.json(products);
+            res.send(products);
         })
 
         app.get('/selectedservice/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const service = await servicesCollection.findOne(query);
-            res.json(service);
+            res.send(service);
         })
 
         //post/confirm/place that selected order
         app.post('/bookNow', async (req, res) => {
             const orderDetails = req.body;
             const result = await ordersCollection.insertOne(orderDetails);
-            res.json(result);
+            res.send(result);
         })
 
 
@@ -51,7 +51,7 @@ async function run() {
             const email = req.params.email;
             const query = { email: email };
             const user = await usersCollection.findOne(query);
-            res.json(user);
+            res.send(user);
 
         })
         //getting users info to differnciate admin and user
@@ -63,7 +63,7 @@ async function run() {
             if (user?.role === 'admin') {
                 isAdmin = true;
             }
-            res.json({ admin: isAdmin });
+            res.send({ admin: isAdmin });
 
         })
 
@@ -71,13 +71,13 @@ async function run() {
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
-            res.json(result);
+            res.send(result);
         })
 
         app.get('/users', async (req, res) => {
             const cursor = usersCollection.find({});
             const users = await cursor.toArray();
-            res.json(users);
+            res.send(users);
         })
 
 
@@ -123,14 +123,14 @@ async function run() {
                 filter,
                 updateDoc,
             );
-            res.json(result);
+            res.send(result);
         });
 
         // get Learner
         app.get('/users/:email', async (req, res) => {
             const email = req.params.email;
             const result = await usersCollection.findOne({ email: email });
-            res.json(result);
+            res.send(result);
         })
 
 
@@ -142,12 +142,12 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await servicesCollection.findOne(query);
-            res.json(result);
+            res.send(result);
         })
         app.post('/services', async (req, res) => {
             const services = req.body;
             const result = await servicesCollection.insertOne(services);
-            res.json(result);
+            res.send(result);
         })
 
         app.put('/services/:id', async (req, res) => {
@@ -160,7 +160,7 @@ async function run() {
                 }
             };
             const result = await servicesCollection.updateOne(filter, updateDoc);
-            res.json(result);
+            res.send(result);
         })
 
         app.post('/create-checkout-session', async (req, res) => {
@@ -171,7 +171,7 @@ async function run() {
                 amount: amount,
                 payment_method_types: ['card']
             });
-            res.json({ clientSecret: paymentIntent.client_secret })
+            res.send({ clientSecret: paymentIntent.client_secret })
 
         })
 
