@@ -17,7 +17,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
         console.log("server connected");
         const database = client.db('heroRider');
         const usersCollection = database.collection('users');
@@ -190,3 +190,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log("Task Server Is Running at Port", port);
 })
+
+module.exports = app;
