@@ -11,7 +11,8 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json())
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cidqo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cidqo.mongodb.net/?retryWrites=true&w=majority`;
+
 console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -28,21 +29,21 @@ async function run() {
         app.get('/services', async (req, res) => {
             const cursor = servicesCollection.find({});
             const products = await cursor.toArray();
-            res.send(products);
+            res.json(products);
         })
 
         app.get('/selectedservice/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const service = await servicesCollection.findOne(query);
-            res.send(service);
+            res.json(service);
         })
 
         //post/confirm/place that selected order
         app.post('/bookNow', async (req, res) => {
             const orderDetails = req.body;
             const result = await ordersCollection.insertOne(orderDetails);
-            res.send(result);
+            res.json(result);
         })
 
 
@@ -51,7 +52,7 @@ async function run() {
             const email = req.params.email;
             const query = { email: email };
             const user = await usersCollection.findOne(query);
-            res.send(user);
+            res.json(user);
 
         })
         //getting users info to differnciate admin and user
@@ -63,7 +64,7 @@ async function run() {
             if (user?.role === 'admin') {
                 isAdmin = true;
             }
-            res.send({ admin: isAdmin });
+            res.json({ admin: isAdmin });
 
         })
 
@@ -71,13 +72,13 @@ async function run() {
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
-            res.send(result);
+            res.json(result);
         })
 
         app.get('/users', async (req, res) => {
             const cursor = usersCollection.find({});
             const users = await cursor.toArray();
-            res.send(users);
+            res.json(users);
         })
 
 
@@ -97,7 +98,7 @@ async function run() {
             const limit = parseInt(size)
             const skip = page * size;
             const result = await usersCollection.find({}, { limit: limit, skip: skip }).toArray();
-            res.send({
+            res.json({
                 count,
                 result
             });
@@ -107,7 +108,7 @@ async function run() {
         app.get("/allUser/:id", async (req, res) => {
             const id = req.params.id;
             const result = await usersCollection.findOne({ _id: ObjectId(id) });
-            res.send(result);
+            res.json(result);
         });
         // status update
         app.put("/allUser/:id", async (req, res) => {
@@ -123,14 +124,14 @@ async function run() {
                 filter,
                 updateDoc,
             );
-            res.send(result);
+            res.json(result);
         });
 
         // get Learner
         app.get('/users/:email', async (req, res) => {
             const email = req.params.email;
             const result = await usersCollection.findOne({ email: email });
-            res.send(result);
+            res.json(result);
         })
 
 
@@ -142,12 +143,12 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await servicesCollection.findOne(query);
-            res.send(result);
+            res.json(result);
         })
         app.post('/services', async (req, res) => {
             const services = req.body;
             const result = await servicesCollection.insertOne(services);
-            res.send(result);
+            res.json(result);
         })
 
         app.put('/services/:id', async (req, res) => {
@@ -160,7 +161,7 @@ async function run() {
                 }
             };
             const result = await servicesCollection.updateOne(filter, updateDoc);
-            res.send(result);
+            res.json(result);
         })
 
         app.post('/create-checkout-session', async (req, res) => {
@@ -171,7 +172,7 @@ async function run() {
                 amount: amount,
                 payment_method_types: ['card']
             });
-            res.send({ clientSecret: paymentIntent.client_secret })
+            res.json({ clientSecret: paymentIntent.client_secret })
 
         })
 
@@ -184,7 +185,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send("Hero Rider Server Is Running")
+    res.json("Hero Rider Server Is Running")
 })
 
 app.listen(port, () => {
