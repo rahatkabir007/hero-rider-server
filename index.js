@@ -184,11 +184,11 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send("Task Server Is Running")
+    res.send("Hero Rider Server Is Running")
 })
 
 app.listen(port, () => {
-    console.log("Task Server Is Running at Port", port);
+    console.log("Hero Rider  Server Is Running at Port", port);
 })
 
 module.exports = app;
